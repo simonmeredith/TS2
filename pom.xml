@@ -25,14 +25,6 @@
             <artifactId>presto-jdbc</artifactId>
             <version>0.240</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.json/json -->
-        <!--
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20230227</version>
-        </dependency>
-        -->
 
 
     </dependencies>
