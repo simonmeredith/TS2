@@ -3,18 +3,19 @@ import com.facebook.presto.jdbc.internal.okhttp3.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.*;
+import org.json.JSONObject;
 
 public class TS {
 
     public static void main(String[] args) {
-GetToken();
+ValueSetSearch();
     }
 
     public static String GetToken() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://ontology.scot.nhs.uk/authorisation/auth/realms/terminology/protocol/openid-connect/token"))
                 .header("Content-Type","application/x-www-form-urlencoded")
-                .method("POST",HttpRequest.BodyPublishers.ofString("grant_type=client_credentials&client_id=connectathon-consumer&client_secret=xxx"))
+                .method("POST",HttpRequest.BodyPublishers.ofString("grant_type=client_credentials&client_id=connectathon-consumer&client_secret=client_secret"))
                 .build();
         HttpResponse<String> response = null;
         try {
@@ -23,17 +24,21 @@ GetToken();
             e.printStackTrace();
         }
         assert response != null;
-      // System.out.println(response.body());
-        String body = response.body();
-        return body;
+
+        String jsonBody = response.body();
+        JSONObject jsonObject = new JSONObject(jsonBody);
+        String access_token = jsonObject.getString("access_token");
+
+        return access_token;
     }
 
     public static void ValueSetSearch() {
         String token = GetToken();
+        String x = "v";
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://ontology.scot.nhs.uk/production1/fhir/Valueset?name=mental"))
+                .uri(URI.create("https://ontology.scot.nhs.uk/production1/fhir/ValueSet?name=phys"))
                 .header("Authorization",token)
-                .method("GET",null)
+                .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<String> response = null;
         try {
@@ -42,9 +47,7 @@ GetToken();
             e.printStackTrace();
         }
         assert response != null;
-        // System.out.println(response.body());
-        String body = response.body();
-
+        System.out.println(response.body());
     }
 
     public static void PostmanCollectionCode() throws IOException {
