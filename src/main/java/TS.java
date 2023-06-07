@@ -10,7 +10,7 @@ public class TS {
 GetToken();
     }
 
-    public static void GetToken() {
+    public static String GetToken() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://ontology.scot.nhs.uk/authorisation/auth/realms/terminology/protocol/openid-connect/token"))
                 .header("Content-Type","application/x-www-form-urlencoded")
@@ -23,9 +23,29 @@ GetToken();
             e.printStackTrace();
         }
         assert response != null;
-        System.out.println(response.body());
+      // System.out.println(response.body());
+        String body = response.body();
+        return body;
     }
 
+    public static void ValueSetSearch() {
+        String token = GetToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://ontology.scot.nhs.uk/production1/fhir/Valueset?name=mental"))
+                .header("Authorization",token)
+                .method("GET",null)
+                .build();
+        HttpResponse<String> response = null;
+        try {
+            response = HttpClient.newHttpClient().send(request,HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        assert response != null;
+        // System.out.println(response.body());
+        String body = response.body();
+
+    }
 
     public static void PostmanCollectionCode() throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
